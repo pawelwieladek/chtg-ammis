@@ -36,19 +36,19 @@ class Algorithm {
 
     /**
      * Find node with minimal list of uncoloured neighbours
-     * @param nodes Nodes without neighbours coloured with current color
+     * @param availableNodes Nodes without neighbours coloured with current color
      * @returns Node with minimal list of uncoloured neighbours
      */
-    minimalNode(nodes) {
-        return nodes.minBy(v => v.neighbours.count(u => this.nodeColor(u) === null));
+    minimalNode(availableNodes) {
+        return availableNodes.minBy(v => v.neighbours.count(u => this.nodeColor(u) === null));
     }
 
     uncoloredNodes() {
-        return this.nodes.filter(v => v.color === null).size;
+        return this.nodes.filter(v => v.color === null);
     }
 
     colorAllNodes() {
-        while (this.uncoloredNodes() > 0) {
+        while (this.uncoloredNodes().size > 0) {
             var availableNodes = this.availableNodes();
             if (availableNodes.size > 0) {
                 var minimalNode = this.minimalNode(availableNodes);
