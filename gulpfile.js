@@ -6,8 +6,7 @@ gulp.task("test", function () {
         .pipe(mocha({
             compilers: "js:babel/register",
             reporter: "dot",
-            require: "test/setup.js"
+            require: "test/setup.js",
+            istanbul: true
         }));
 });
-
-gulp.task("default", "test");
