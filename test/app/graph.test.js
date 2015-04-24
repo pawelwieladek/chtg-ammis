@@ -1,7 +1,5 @@
 describe("Algorithm", function() {
-    var Node = require("../../app/node");
     var Graph = require("../../app/graph");
-    var Algorithm = require("../../app/algorithm");
 
     it("Constructor", function() {
         // when
