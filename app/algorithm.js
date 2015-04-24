@@ -1,4 +1,5 @@
 var { Map, List, Range } = require("immutable");
+var Node = require("./node");
 
 class Algorithm {
     constructor(nodes) {
@@ -16,6 +17,12 @@ class Algorithm {
 
     get currentColor() {
         return this._color;
+    }
+
+    static fromJSON(map) {
+        var algorithm = new Algorithm([]);
+        algorithm.nodes = Map(map).mapEntries(([k, v]) => [k, new Node(v)]);
+        return algorithm;
     }
 
     nextColor() {

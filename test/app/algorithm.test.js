@@ -19,6 +19,27 @@ describe("Algorithm", function() {
         expect(algorithm.currentColor).to.equal(1);
     });
 
+    it("From JSON", function() {
+        // given
+        var nodes = {
+            1: [2],
+            2: [1, 3, 5],
+            3: [2, 4],
+            4: [3, 6, 5],
+            5: [2, 4],
+            6: [4]
+        };
+
+        // when
+        var algorithm = Algorithm.fromJSON(nodes);
+
+        // then
+        expect(algorithm.nodes.size).to.equal(6);
+        expect(algorithm.nodes.has("0")).to.equal(false);
+        expect(algorithm.nodes.has("3")).to.equal(true);
+        expect(algorithm.nodes.get("3").neighbours.size).to.equal(2);
+    });
+
     it("Find nodes without neighbours coloured with current color", function() {
         // given
         var a = new Node([1]);
