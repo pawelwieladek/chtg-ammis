@@ -1,116 +1,104 @@
 describe("Algorithm", function() {
-    var Node = require("../../app/node");
+    var Graph = require("../../app/graph");
     var Algorithm = require("../../app/algorithm");
-
-    it("Constructor", function() {
-        // given
-        var nodes = [
-            new Node([1]),
-            new Node([0, 2, 3]),
-            new Node([1, 3]),
-            new Node([1, 2])
-        ];
-
-        // when
-        var algorithm = new Algorithm(nodes);
-
-        // then
-        expect(algorithm.nodes.size).to.equal(4);
-        expect(algorithm.currentColor).to.equal(1);
-    });
-
-    it("From JSON", function() {
-        // given
-        var nodes = {
-            1: [2],
-            2: [1, 3, 5],
-            3: [2, 4],
-            4: [3, 6, 5],
-            5: [2, 4],
-            6: [4]
-        };
-
-        // when
-        var algorithm = Algorithm.fromJSON(nodes);
-
-        // then
-        expect(algorithm.nodes.size).to.equal(6);
-        expect(algorithm.nodes.has("0")).to.equal(false);
-        expect(algorithm.nodes.has("3")).to.equal(true);
-        expect(algorithm.nodes.get("3").neighbours.size).to.equal(2);
-    });
 
     it("Find nodes without neighbours coloured with current color", function() {
         // given
-        var a = new Node([1]);
-        a.color = 1;
-        var b = new Node([0, 2, 3]);
-        var c = new Node([1, 3]);
-        var d = new Node([1, 2]);
-        var nodes = [a, b, c, d];
-        var algorithm = new Algorithm(nodes);
+        var nodes = {
+            0: [1],
+            1: [0, 2, 3],
+            2: [1, 3],
+            3: [1, 2]
+        };
+        var graph = Graph.fromJSON(nodes);
+        var currentColor = 1;
+        graph.update("0", currentColor);
 
         // when
-        var availableNodes = algorithm.availableNodes().toArray();
+        var availableNodes = Algorithm.availableNodes(graph, currentColor).keySeq().toJS();
 
         // then
-        expect(availableNodes).to.deep.equal([c, d]);
+        expect(availableNodes).to.deep.equal(["2", "3"]);
     });
 
     it("Find node with minimal list of uncoloured neighbours", function() {
         // given
-        var a = new Node([1]);
-        a.color = 1;
-        var b = new Node([0, 2, 3]);
-        var c = new Node([1, 3]);
-        var d = new Node([1, 2, 4]);
-        var e = new Node([3]);
-        var nodes = [a, b, c, d, e];
-        var algorithm = new Algorithm(nodes);
-        var list = algorithm.availableNodes();
+        var nodes = {
+            0: [1],
+            1: [0, 2, 3],
+            2: [1, 3],
+            3: [1, 2, 4],
+            4: [3]
+        };
+        var graph = Graph.fromJSON(nodes);
+        var currentColor = 1;
+        graph.update("0", currentColor);
+        var availableNodes = Algorithm.availableNodes(graph, currentColor);
 
         // when
-        var minimalNode = algorithm.minimalNode(list);
+        var minimalNode = Algorithm.minimalNode(graph, availableNodes);
 
         // then
-        expect(minimalNode).to.equal(e);
+        expect(minimalNode).to.equal("4");
+    });
+
+    describe("Reduce colors", function() {
+        // given
+        var nodes = {
+            0: [1],
+            1: [0, 2, 3],
+            2: [1, 3],
+            3: [1, 2, 4],
+            4: [3]
+        };
+        var graph = Graph.fromJSON(nodes);
+        graph.update("0", 1);
+        graph.update("1", 2);
+        graph.update("2", 1);
+        graph.update("3", 3);
+        graph.update("4", 1);
+
+        // when
+        var sum = Algorithm.reduceColors(graph);
+
+        // then
+        expect(sum).to.equal(8);
     });
 
     describe("Chromatic sum", function() {
         it("simple", function() {
             // given
-            var a = new Node([1]);
-            var b = new Node([0, 2, 3]);
-            var c = new Node([1, 3]);
-            var d = new Node([1, 2, 4]);
-            var e = new Node([3]);
-            var nodes = [a, b, c, d, e];
-            var algorithm = new Algorithm(nodes);
+            var nodes = {
+                0: [1],
+                1: [0, 2, 3],
+                2: [1, 3],
+                3: [1, 2, 4],
+                4: [3]
+            };
+            var graph = Graph.fromJSON(nodes);
 
             // when
-            algorithm.colorAllNodes();
-            var chromaticSum = algorithm.chromaticSum();
+            var chromaticSum = Algorithm.chromaticSum(graph);
 
             // then
             expect(chromaticSum).to.equal(8);
         });
         it("tricky", function() {
             // given
-            var nodes = [
-                new Node([3]),
-                new Node([3]),
-                new Node([3]),
-                new Node([0, 1, 2, 4]),
-                new Node([3, 5, 6, 7]),
-                new Node([4]),
-                new Node([4]),
-                new Node([4])
-            ];
-            var algorithm = new Algorithm(nodes);
+            var nodes = {
+                0: [3],
+                1: [3],
+                2: [3],
+                3: [0, 1, 2, 4],
+                4: [3, 5, 6, 7],
+                5: [4],
+                6: [4],
+                7: [4]
+            };
+            var graph = Graph.fromJSON(nodes);
 
             // when
-            algorithm.colorAllNodes();
-            var chromaticSum = algorithm.chromaticSum();
+            var chromaticSum = Algorithm.chromaticSum(graph);
 
             // then
             expect(chromaticSum).to.equal(11);

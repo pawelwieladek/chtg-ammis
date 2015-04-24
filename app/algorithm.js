@@ -1,75 +1,44 @@
-var { Map, List, Range } = require("immutable");
 var Node = require("./node");
 
 class Algorithm {
-    constructor(nodes) {
-        this._color = 1;
-        this._nodes = Map(Range(0, List(nodes).size).zip(nodes));
-    }
-
-    get nodes() {
-        return this._nodes;
-    }
-
-    set nodes(value) {
-        this._nodes = value;
-    }
-
-    get currentColor() {
-        return this._color;
-    }
-
-    static fromJSON(map) {
-        var algorithm = new Algorithm([]);
-        algorithm.nodes = Map(map).mapEntries(([k, v]) => [k, new Node(v)]);
-        return algorithm;
-    }
-
-    nextColor() {
-        this._color = this._color + 1;
-    }
-
-    nodeColor(node) {
-        return this.nodes.get(node).color;
-    }
 
     /**
      * Find nodes without neighbours coloured with current color
+     * @param graph Graph
+     * @param currentColor Current color
      * @returns Map of nodes
      */
-    availableNodes() {
-        return this.nodes.filter(v => v.color === null && v.neighbours.every(u => this.nodeColor(u) !== this.currentColor));
+    static availableNodes(graph, currentColor) {
+        return graph.nodes.filter((node, key) => graph.color(key) === null && node.neighbours.every(v => graph.color(v) !== currentColor));
     }
 
     /**
      * Find node with minimal list of uncoloured neighbours
+     * @param graph Graph
      * @param availableNodes Nodes without neighbours coloured with current color
      * @returns Node with minimal list of uncoloured neighbours
      */
-    minimalNode(availableNodes) {
-        return availableNodes.minBy(v => v.neighbours.count(u => this.nodeColor(u) === null));
+    static minimalNode(graph, availableNodes) {
+        return graph.nodes.keyOf(availableNodes.minBy(v => v.neighbours.count(u => graph.color(u) === null)));
     }
 
-    uncoloredNodes() {
-        return this.nodes.filter(v => v.color === null);
+    static reduceColors(graph) {
+        return graph.nodes.reduce((sum, v, k) => sum + graph.color(k), 0);
     }
 
-    colorAllNodes() {
-        while (this.uncoloredNodes().size > 0) {
-            var availableNodes = this.availableNodes();
+    static chromaticSum(graph) {
+        graph = graph.clone();
+        var currentColor = 1;
+        while (graph.uncolored().size > 0) {
+            var availableNodes = Algorithm.availableNodes(graph, currentColor);
             if (availableNodes.size > 0) {
-                var minimalNode = this.minimalNode(availableNodes);
-                var index = this.nodes.keyOf(minimalNode);
-                minimalNode.color = this.currentColor;
-                this.nodes = this.nodes.set(index, minimalNode);
+                var minimalNode = Algorithm.minimalNode(graph, availableNodes);
+                graph.update(minimalNode, currentColor);
             } else {
-                this.nextColor();
+                currentColor = currentColor + 1;
             }
         }
-    }
-
-    chromaticSum() {
-        return this.nodes.reduce((sum, v) => sum + v.color, 0);
+        return Algorithm.reduceColors(graph);
     }
 }
 
