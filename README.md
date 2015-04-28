@@ -22,8 +22,10 @@ var nodes = {
 };
 var graph = Graph.fromJSON(nodes);
 ```
-The graph defined above is shown below:
+The graph defined above is shown below.
+
 ![The tricky graph](/assets/graph.png "The tricky graph")
+
 Chromatic sum of the above graph is 11.
 
 ### Calculating chromatic sum
