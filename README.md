@@ -28,11 +28,5 @@ The graph defined above is shown below.
 
 ### How to run the app
 1. Put this file (let's say ```example.json```) into ```input``` directory.
-2. Build the app
-```
-gulp build
-```
-3. Run
-```
-node dist/app.js -f example.json
-```
+2. Build the app ```gulp build```
+3. Run ```node dist/app.js -f example.json```
