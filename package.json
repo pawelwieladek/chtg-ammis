@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
+  "author": "Pawel Wieladek",
+  "repository": "github:pawelwieladek/chtg-ammis",
   "license": "ISC",
   "devDependencies": {
     "babel": "^5.1.11",
@@ -17,6 +15,9 @@
     "mocha": "^2.2.4"
   },
   "dependencies": {
-    "immutable": "^3.7.2"
+    "del": "^1.1.1",
+    "gulp-babel": "^5.1.0",
+    "immutable": "^3.7.2",
+    "stdio": "^0.2.7"
   }
 }
