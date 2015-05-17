@@ -1,6 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 var stdio = require('stdio');
+var util = require("util");
 
 var Graph = require("./graph");
 var Algorithm = require("./algorithm");
@@ -17,6 +18,8 @@ fs.readFile(filepath, { encoding: "utf-8" }, function(err, data){
       var json = JSON.parse(data);
       var graph = Graph.fromJSON(json);
       var result = Algorithm.chromaticSum(graph);
+      console.log("Graph");
+      console.log(util.inspect(json, false, 2, true));
       console.log("Chromatic sum: " + result);
     } catch (e) {
       console.log(e);
